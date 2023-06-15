@@ -7,6 +7,11 @@
             <Card :item="item"></Card>
           </div>
         </div>
+        <BasicPagination
+          :pageCount="state.page.totalPages"
+          :page-range="1"
+          @pageSelected="pageChangeHandler"
+        />
       </div>
     </div>
   </main>
@@ -21,20 +26,54 @@ export default {
   setup() {
     const state = reactive({
       items: [],
+      page: {
+        totalPages: 0,
+      },
     });
 
-    // (async () => {
-    //   const res = await api.findItems();
-    //   state.items = res.data;
-    // })();
+    const findItems = (page) => {
+      (async () => {
+        const res = await api.findItems(page);
+        state.items = res.data.content;
+        state.page.totalPages = res.data.totalPages;
+      })();
+    };
 
-    api.findItems().then(({ data }) => {
-      state.items = data;
-      console.log(data);
-    });
+    findItems({ page: 1, size: 3 });
 
-    return { state };
+    const pageChangeHandler = (page) => {
+      findItems({ page: page, size: 3 });
+    };
+
+    return { state, pageChangeHandler };
   },
   components: { Card },
 };
 </script>
+
+<style scoped>
+.pagination-container {
+  display: flex;
+  column-gap: 10px;
+}
+.paginate-buttons {
+  height: 40px;
+  width: 40px;
+  border-radius: 20px;
+  cursor: pointer;
+  background-color: rgb(242, 242, 242);
+  border: 1px solid rgb(217, 217, 217);
+  color: black;
+}
+.paginate-buttons:hover {
+  background-color: #d8d8d8;
+}
+.active-page {
+  background-color: #3498db;
+  border: 1px solid #3498db;
+  color: white;
+}
+.active-page:hover {
+  background-color: #2988c8;
+}
+</style>

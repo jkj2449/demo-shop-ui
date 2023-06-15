@@ -9,7 +9,7 @@
       <div class="d-flex justify-content-between align-items-center">
         <button class="btn btn-primary">구입하기</button>
         <small class="text-muted">
-          {{ util.numberWithCommas(item.price) }} 원
+          {{ util.numberWithCommas(item.price || 0) }} 원
         </small>
       </div>
     </div>

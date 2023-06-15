@@ -3,21 +3,33 @@
     <div class="collapse text-bg-dark" id="navbarHeader">
       <div class="container">
         <div class="row">
-          <div class="col-sm-8 col-md-7 py-4">
-            <h4>About</h4>
-            <p class="text-body-secondary">
-              Add some information about the album below, the author, or any
-              other background context. Make it a few sentences long so folks
-              can pick up some informative tidbits. Then, link them off to some
-              social networking sites or contact information.
-            </p>
-          </div>
-          <div class="col-sm-4 offset-md-1 py-4">
-            <h4>Contact</h4>
+          <div class="col-sm-4 py-4">
+            <h4>사이트맵</h4>
             <ul class="list-unstyled">
-              <li><a href="#" class="text-white">Follow on Twitter</a></li>
-              <li><a href="#" class="text-white">Like on Facebook</a></li>
-              <li><a href="#" class="text-white">Email me</a></li>
+              <li>
+                <router-link :to="{ name: 'Home' }" class="text-white">
+                  메인화면
+                </router-link>
+              </li>
+              <li>
+                <router-link
+                  :to="{ name: 'SignUp' }"
+                  class="text-white"
+                  v-if="!$store.state.authStore.user.id"
+                >
+                  회원가입
+                </router-link>
+              </li>
+              <li>
+                <router-link
+                  :to="{ name: 'SignIn' }"
+                  class="text-white"
+                  v-if="!$store.state.authStore.user.id"
+                >
+                  로그인
+                </router-link>
+                <a class="text-white" v-else @click="signOut()"> 로그아웃 </a>
+              </li>
             </ul>
           </div>
         </div>
@@ -63,7 +75,22 @@
 </template>
 
 <script>
+import { useStore } from "vuex";
+import router from "@/router/router";
+
 export default {
-  setup() {},
+  setup() {
+    const store = useStore();
+
+    const signOut = () => {
+      store.dispatch("authStore/setUser", {});
+
+      sessionStorage.removeItem("user");
+
+      router.push({ name: "Home" });
+    };
+
+    return { signOut };
+  },
 };
 </script>

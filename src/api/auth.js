@@ -1,12 +1,12 @@
 import axios from "./http";
 
 const api = {
-  singIn: (payload) => {
-    return axios.post("/api/v1/singIn", payload);
+  signIn: (payload) => {
+    return axios.post("/v1/signIn", payload);
   },
 
-  singUp: (payload) => {
-    return axios.post("/api/v1/singUp", payload);
+  signUp: (payload) => {
+    return axios.post("/v1/signUp", payload);
   },
 };
 

@@ -5,11 +5,20 @@
 </template>
 
 <script>
+import { useStore } from "vuex";
 import Footer from "./components/Footer.vue";
 import Header from "./components/Header.vue";
 
 export default {
   name: "App",
+  setup() {
+    const user = JSON.parse(sessionStorage.getItem("user")) || {};
+    console.log(user);
+    if (user.id) {
+      const store = useStore();
+      store.dispatch("authStore/setUser", user);
+    }
+  },
   components: {
     Header,
     Footer,
