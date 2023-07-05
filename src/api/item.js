@@ -1,8 +1,8 @@
 import axios from "./http";
 
 const api = {
-  findItems: (params) => {
-    return axios.get("/v1/items", { params });
+  findItems: (payload) => {
+    return axios.get("/v1/items", { params: payload });
   },
 };
 

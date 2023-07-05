@@ -13,7 +13,6 @@ export default {
   name: "App",
   setup() {
     const user = JSON.parse(sessionStorage.getItem("user")) || {};
-    console.log(user);
     if (user.id) {
       const store = useStore();
       store.dispatch("authStore/setUser", user);

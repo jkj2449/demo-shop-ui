@@ -2,30 +2,46 @@
   <div class="card shadow-sm">
     <span
       class="img"
-      :style="{ backgroundImage: `url(${item.imagePath})` }"
+      :style="{ backgroundImage: `url(${props.item.imagePath})` }"
     ></span>
     <div class="card-body">
-      <p class="card-text">{{ item.name }}</p>
+      <p class="card-text">{{ props.item.name }}</p>
       <div class="d-flex justify-content-between align-items-center">
-        <button class="btn btn-primary">구입하기</button>
+        <template v-if="$store.state.authStore.user.id">
+          <button class="btn btn-primary" @click="addToCart(item.id)">
+            <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+          </button>
+        </template>
         <small class="text-muted">
-          {{ util.numberWithCommas(item.price || 0) }} 원
+          {{ util.numberWithCommas(props.item.price || 0) }} 원
         </small>
       </div>
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
 import util from "@/util/util";
+import api from "@/api/cart";
+import store from "@/store/store";
+import { defineProps } from "vue";
 
-export default {
-  props: {
-    item: Object,
+const props = defineProps({
+  item: {
+    type: Object,
+    required: true,
   },
-  setup() {
-    return { util };
-  },
+});
+
+const addToCart = async (itemId) => {
+  try {
+    await api.addCart({
+      itemId: itemId,
+      memberId: store.state.authStore.user.id,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 </script>
 

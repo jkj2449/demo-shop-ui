@@ -60,8 +60,7 @@ export default {
     const signIn = async () => {
       const res = await api.signIn(state.form);
 
-      sessionStorage.setItem("user", JSON.stringify(res.data));
-
+      store.dispatch("authStore/setAuthorization", res.headers.authorization);
       store.dispatch("authStore/setUser", res.data);
       router.push({ name: "Home" });
     };

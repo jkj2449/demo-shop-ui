@@ -17,37 +17,34 @@
   </main>
 </template>
 
-<script>
+<script setup>
 import api from "@/api/item";
 import Card from "@/components/item/Card.vue";
-import { reactive } from "vue";
+import { reactive, onMounted } from "vue";
 
-export default {
-  setup() {
-    const state = reactive({
-      items: [],
-      page: {
-        totalPages: 0,
-      },
-    });
-
-    const findItems = (page) => {
-      (async () => {
-        const res = await api.findItems(page);
-        state.items = res.data.content;
-        state.page.totalPages = res.data.totalPages;
-      })();
-    };
-
-    findItems({ page: 1, size: 3 });
-
-    const pageChangeHandler = (page) => {
-      findItems({ page: page, size: 3 });
-    };
-
-    return { state, pageChangeHandler };
+const state = reactive({
+  items: [],
+  page: {
+    totalPages: 0,
   },
-  components: { Card },
+});
+
+onMounted(() => {
+  findItems({ page: 1, size: 10 });
+});
+
+const findItems = async (page) => {
+  try {
+    const res = await api.findItems(page);
+    state.items = res.data.content;
+    state.page.totalPages = res.data.totalPages;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const pageChangeHandler = (page) => {
+  findItems({ page: page, size: 10 });
 };
 </script>
 
