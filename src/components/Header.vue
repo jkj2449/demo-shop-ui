@@ -65,24 +65,21 @@
   </header>
 </template>
 
-<script>
+<script setup>
 import { useStore } from "vuex";
 import router from "@/router/router";
+import api from "@/api/auth";
 
-export default {
-  setup() {
-    const store = useStore();
+const store = useStore();
 
-    const signOut = () => {
-      store.dispatch("authStore/setAuthorization", null);
-      store.dispatch("authStore/setUser", {});
-      router.push({ name: "Home" });
-    };
-
-    return { signOut };
-  },
+const signOut = async () => {
+  await api.signOut({ email: store.state.authStore.user.email });
+  store.dispatch("authStore/setAuthorization", null);
+  store.dispatch("authStore/setUser", {});
+  router.push({ name: "Home" });
 };
 </script>
+
 <style>
 header .navbar .cart {
   margin-left: auto;

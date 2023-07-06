@@ -1,5 +1,6 @@
 import axios from "axios";
 import store from "@/store/store";
+import router from "@/router/router";
 
 const instance = axios.create({
   baseURL: "/api",
@@ -20,7 +21,12 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.log(error);
+    if (error.response.status === 403) {
+      store.dispatch("authStore/setAuthorization", null);
+      store.dispatch("authStore/setUser", {});
+      router.push({ name: "SignIn" });
+      return;
+    }
     return Promise.reject(error);
   }
 );
