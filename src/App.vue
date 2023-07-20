@@ -9,19 +9,30 @@ import { useStore } from "vuex";
 import { onMounted } from "vue";
 import Footer from "./components/Footer.vue";
 import Header from "./components/Header.vue";
-import api from "@/api/auth";
+import authApi from "@/api/auth";
+import codeApi from "@/api/code";
 
 const store = useStore();
 
 onMounted(() => {
   refresh();
+  initCodes();
 });
 
 const refresh = async () => {
   try {
-    const res = await api.refresh();
+    const res = await authApi.refresh();
     store.dispatch("authStore/setAuthorization", res.headers.authorization);
     store.dispatch("authStore/setUser", res.data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const initCodes = async () => {
+  try {
+    const res = await codeApi.codes();
+    store.dispatch("codeStore/setCodes", res.data);
   } catch (error) {
     console.log(error);
   }

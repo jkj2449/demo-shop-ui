@@ -6,9 +6,9 @@
           <img :src="cart.item.imagePath" />
           <span class="name">{{ cart.item.name }}</span>
           <span class="price">
-            {{ util.numberWithCommas(cart.item.price || 0) }} 원
+            {{ $utils.numberWithCommas(cart.item.price || 0) }} 원
           </span>
-          <input type="checkbox" :value="cart" v-model="state.checkedCart" />
+          <input type="checkbox" :value="cart" v-model="state.checkedCarts" />
         </li>
       </ul>
     </div>
@@ -19,15 +19,17 @@
     />
     <div class="col-lg-6 mx-auto">
       <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
-        <router-link
-          :to="{ name: 'Order' }"
+        <button
           class="btn btn-primary btn-lg px-4 me-sm-3"
+          :disabled="state.checkedCarts.length == 0"
+          @click="moveToOrder()"
         >
           구매하기
-        </router-link>
+        </button>
         <button
           type="button"
           class="btn btn-outline-secondary btn-lg px-4"
+          :disabled="state.checkedCarts.length == 0"
           @click="remove()"
         >
           비우기
@@ -39,22 +41,24 @@
 </template>
 
 <script setup>
-import { reactive, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { reactive, onBeforeMount } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useStore } from "vuex";
 import api from "@/api/cart";
-import util from "@/util/util";
+
+const route = useRoute();
+const router = useRouter();
+const store = useStore();
 
 const state = reactive({
   carts: [],
   page: {
     totalPages: 0,
   },
-  checkedCart: [],
+  checkedCarts: [],
 });
 
-const route = useRoute();
-
-onMounted(() => {
+onBeforeMount(() => {
   findCarts({ page: 1, size: 3 });
 });
 
@@ -72,18 +76,23 @@ const findCarts = async (payload) => {
 };
 
 const remove = async () => {
-  if (state.checkedCart.length == 0) {
+  if (state.checkedCarts.length == 0) {
     return;
   }
 
   try {
-    const cartIdList = state.checkedCart.map((v) => v.id);
+    const cartIdList = state.checkedCarts.map((v) => v.id);
     await api.deleteCarts({ cartIdList: cartIdList });
-    state.checkedCart = [];
+    state.checkedCarts = [];
     findCarts({ page: 1, size: 3 });
   } catch (error) {
     console.log(error);
   }
+};
+
+const moveToOrder = () => {
+  store.dispatch("orderStore/setCarts", state.checkedCarts);
+  router.push({ name: "Order" });
 };
 
 const pageChangeHandler = (page) => {

@@ -17,6 +17,18 @@
               </li>
               <li>
                 <router-link
+                  :to="{
+                    name: 'MyOrder',
+                    params: { userId: $store.state.authStore.user.id },
+                  }"
+                  class="text-white"
+                  v-if="$store.state.authStore.user.id"
+                >
+                  주문내역
+                </router-link>
+              </li>
+              <li>
+                <router-link
                   :to="{ name: 'SignIn' }"
                   class="text-white"
                   v-if="!$store.state.authStore.user.id"
@@ -43,7 +55,9 @@
         <router-link
           :to="{
             name: 'Cart',
-            params: { userId: $store.state.authStore.user.id || 0 },
+            params: {
+              userId: $store.state.authStore.user.id || 0,
+            },
           }"
           class="cart btn"
         >

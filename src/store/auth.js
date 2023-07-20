@@ -15,10 +15,10 @@ export default {
     },
   },
   actions: {
-    setUser: async (context, payload) => {
+    setUser: (context, payload) => {
       context.commit("SET_USER", payload);
     },
-    setAuthorization: async (context, payload) => {
+    setAuthorization: (context, payload) => {
       context.commit("SET_AUTHORIZATION", payload);
     },
   },

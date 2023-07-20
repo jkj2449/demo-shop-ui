@@ -13,7 +13,7 @@
           </button>
         </template>
         <small class="text-muted">
-          {{ util.numberWithCommas(props.item.price || 0) }} 원
+          {{ $utils.numberWithCommas(props.item.price || 0) }} 원
         </small>
       </div>
     </div>
@@ -21,7 +21,6 @@
 </template>
 
 <script setup>
-import util from "@/util/util";
 import api from "@/api/cart";
 import store from "@/store/store";
 import { defineProps } from "vue";

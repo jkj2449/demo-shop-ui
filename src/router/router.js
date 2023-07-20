@@ -5,6 +5,7 @@ const SignIn = () => import("@/view/SignIn.vue");
 const SignUp = () => import("@/view/SignUp.vue");
 const Cart = () => import("@/view/Cart.vue");
 const Order = () => import("@/view/Order.vue");
+const MyOrder = () => import("@/view/MyOrder.vue");
 
 const routes = [
   { path: "/", name: "Home", component: Home },
@@ -12,6 +13,7 @@ const routes = [
   { path: "/signUp", name: "SignUp", component: SignUp },
   { path: "/cart/:userId", name: "Cart", component: Cart },
   { path: "/order", name: "Order", component: Order },
+  { path: "/my-order/:userId", name: "MyOrder", component: MyOrder },
 ];
 
 const router = createRouter({
