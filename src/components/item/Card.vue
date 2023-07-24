@@ -7,11 +7,20 @@
     <div class="card-body">
       <p class="card-text">{{ props.item.name }}</p>
       <div class="d-flex justify-content-between align-items-center">
-        <template v-if="$store.state.authStore.user.id">
-          <button class="btn btn-primary" @click="addToCart(item.id)">
-            <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+        <div class="btn-group" v-if="$store.state.authStore.user.id">
+          <button
+            class="btn btn-sm btn-outline-secondary"
+            @click="addToCart(item.id)"
+          >
+            장비구니
           </button>
-        </template>
+          <button
+            class="btn btn-sm btn-outline-secondary"
+            @click="moveToOrder(item)"
+          >
+            구매하기
+          </button>
+        </div>
         <small class="text-muted">
           {{ $utils.numberWithCommas(props.item.price || 0) }} 원
         </small>
@@ -23,7 +32,9 @@
 <script setup>
 import api from "@/api/cart";
 import store from "@/store/store";
+import router from "@/router/router";
 import { defineProps } from "vue";
+import { useToast } from "vue-toastification";
 
 const props = defineProps({
   item: {
@@ -38,9 +49,18 @@ const addToCart = async (itemId) => {
       itemId: itemId,
       memberId: store.state.authStore.user.id,
     });
+
+    useToast().success("장바구니에 담겼습니다.", {
+      timeout: 1000,
+    });
   } catch (error) {
     console.log(error);
   }
+};
+
+const moveToOrder = (item) => {
+  store.dispatch("orderStore/setItems", [item]);
+  router.push({ name: "Order" });
 };
 </script>
 

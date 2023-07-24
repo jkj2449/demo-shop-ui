@@ -134,7 +134,7 @@
 </template>
 
 <script setup>
-import { reactive, computed, onBeforeMount, watch } from "vue";
+import { reactive, computed, onBeforeMount, onBeforeUnmount, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import api from "@/api/order";
@@ -149,6 +149,11 @@ onBeforeMount(() => {
   }
 });
 
+onBeforeUnmount(() => {
+  store.dispatch("orderStore/setCarts", []);
+  store.dispatch("orderStore/setItems", []);
+});
+
 const state = reactive({
   carts: store.getters["orderStore/getCarts"] || [],
   items: store.getters["orderStore/getItems"] || [],
@@ -158,9 +163,9 @@ const state = reactive({
   payForm: {
     memberId: store.state.authStore.user.id,
     address: "",
-    bankCode: "",
-    cardCode: "",
-    payTypeCode: "",
+    bankCode: null,
+    cardCode: null,
+    payTypeCode: null,
     cardNumber: "",
   },
 });
@@ -187,26 +192,17 @@ watch(
 
 const submit = async () => {
   const payload = {
-    orderDetailList: createOderDetailList(),
     ...state.payForm,
+    totalPrice: state.items.map((v) => v.price).reduce((a, b) => a + b, 0),
+    itemIdList: state.items.map((v) => v.id),
+    cartIdList: state.carts.map((v) => v.id),
   };
 
   await api.order(payload);
-  store.dispatch("orderStore/setCarts", []);
 
   router.push({
     name: "MyOrder",
     params: { userId: store.state.authStore.user.id },
-  });
-};
-
-const createOderDetailList = () => {
-  return state.carts.map((cart) => {
-    return {
-      cartId: cart.id,
-      itemId: cart.item.id,
-      price: cart.item.price,
-    };
   });
 };
 

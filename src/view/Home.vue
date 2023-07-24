@@ -9,7 +9,7 @@
         </div>
         <BasicPagination
           :pageCount="state.page.totalPages"
-          :page-range="1"
+          :page-range="10"
           @pageSelected="pageChangeHandler"
         />
       </div>

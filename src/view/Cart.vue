@@ -14,7 +14,7 @@
     </div>
     <BasicPagination
       :pageCount="state.page.totalPages"
-      :page-range="1"
+      :page-range="5"
       @pageSelected="pageChangeHandler"
     />
     <div class="col-lg-6 mx-auto">
@@ -44,6 +44,7 @@
 import { reactive, onBeforeMount } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
+
 import api from "@/api/cart";
 
 const route = useRoute();
